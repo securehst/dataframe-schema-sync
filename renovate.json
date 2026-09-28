@@ -10,9 +10,9 @@
   "rebaseWhen": "behind-base-branch",
   "packageRules": [
     {
-      "matchManagers": ["uv"],
-      "groupName": "uv dependencies",
-      "automerge": true
+      "matchManagers": ["pep621"],
+      "groupName": "python dependencies",
+      "description": "Renovate has no uv manager; pyproject.toml and uv.lock are handled by pep621. Deliberately left as chore() rather than fix() as in the service repos: this is a library, so a lock or dev-dependency bump changes nothing in the published wheel and must not cut a PyPI release"
     },
     {
       "matchManagers": ["github-actions"],
