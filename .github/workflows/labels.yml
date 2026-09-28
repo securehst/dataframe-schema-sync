@@ -5,18 +5,26 @@ on:
     branches:
       - main
     paths:
-      - ".github/**"
+      - ".github/labels.yml"
+      - ".github/workflows/labels.yml"
+  pull_request:
+    paths:
+      - ".github/labels.yml"
+      - ".github/workflows/labels.yml"
 
 jobs:
   labels:
     runs-on: self-hosted
+    permissions:
+      contents: read
+      issues: write
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
-      - name: Set up Python
-        uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7
-        with:
-          python-version: 3.x
-      - name: Install labels
-        run: pip install labels
       - name: Sync config with Github
-        run: labels -u ${{ github.repository_owner }} -t ${{ secrets.GH_PAT }} sync -f .github/labels.toml
+        uses: crazy-max/ghaction-github-labeler@548a7c3603594ec17c819e1239f281a3b801ab4d # v6.0.0
+        with:
+          yaml-file: .github/labels.yml
+          # Pull requests only preview the changes; they are applied once merged to main
+          dry-run: ${{ github.event_name == 'pull_request' }}
+          # Never delete: a label missing from the file may still be on issues and PRs
+          skip-delete: true
